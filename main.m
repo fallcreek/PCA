@@ -119,7 +119,7 @@ for components = components_list
     i = i + 1;
 end
 
-%% Reconstruct one of 190 people¡¯s neutral expression image using different number of PCs
+%% Reconstruct one of the other 10 people¡¯s neutral expression image using different number of PCs
 % eigenvalues and eigenvectors of A'A
 [v, lam] = eig(neutral_diff' * neutral_diff);
 lam = diag(lam);
@@ -157,23 +157,44 @@ for components = components_list
 end
 
 %% Use other non-human image, and try to reconstruct it using all PCs
-car_img = imread('car.jpg');
-imcrop(I,[0 0 130 112]);
+car_img = imread('car3.jpg');
+car_img = car_img(:,:,1);
 car_vector = reshape(car_img, 193*162, 1);
-components_list = 10:10:190;
 figure
 hold on
-subplot(5,4,1)
+subplot(1,2,1)
 imshow(car_img,[]);
 title('original img')
-i = 2;
-for components = components_list    
-    u_components = u_sorted(:, 1:components);
-    weights = u_components' * (double(car_vector) - neutral_average);
-    reconstruct_img = u_components * weights + neutral_average;
+u_components = u_sorted;
+weights = u_components' * (double(car_vector) - neutral_average);
+reconstruct_img = u_components * weights + neutral_average;
     
-    subplot(5,4,i)  
-    imshow(reshape(reconstruct_img(:),193,162),[]);
-    title(char(string(components) + string('PCs')))
+subplot(1,2,2)  
+imshow(reshape(reconstruct_img(:),193,162),[]);
+title('reconstruct with all PCs')
+
+%% Rotate one of 190 people¡¯s neutral expression image with different degrees and try to reconstruct it using all PCs
+img_number = 1;
+img_vector = neutral(:,img_number);
+img_ori = reshape(img_vector, 193, 162);
+
+figure
+hold on
+degrees = 45:45:360;
+i = 1
+for degree = degrees
+    img_rotate = imrotate(img_ori, degree, 'crop');
+    subplot(4, 4, i)
+    imshow(img_rotate,[]);
+    title(char(string('degree = ') + string(degree) + string(' : original')))
     i = i + 1;
+    
+    img_rotate = reshape(img_rotate, 193 * 162, 1);
+    u_components = u_sorted;
+    weights = u_components' * (double(img_rotate) - neutral_average);
+    reconstruct_img = u_components * weights + neutral_average;
+    subplot(4, 4, i)
+    imshow(reshape(reconstruct_img, 193, 162),[]);
+    title(char(string('degree = ') + string(degree) + string(' : reconstruct')))
+    i = i + 1
 end
