@@ -230,20 +230,6 @@ end
 [lam_sorted_with_noise, index_with_noise] = sort(lam, 'descend');
 u_sorted_with_noise = u_with_noise(:,index_with_noise);
 
-% plot the scatter of eigenvalues
-% figure 
-% x = 1:1:190
-% scatter(x, lam_sorted)
-% title('eigenvalues scatter')
-% xlabel('number of components')
-% ylabel('eigenvalues')
-
-
-% figure;imshow(reshape(u_sorted(:,1),193,162),[]);
-% figure;imshow(reshape(u_sorted(:,2),193,162),[]);
-% figure;imshow(reshape(u_sorted(:,3),193,162),[]);
-
-
 % reconstruction neutral image
 components_list = 10:10:190;
 img_number = 1;
